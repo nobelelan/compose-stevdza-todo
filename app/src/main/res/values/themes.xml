@@ -2,4 +2,5 @@
 <resources>
 
     <style name="Theme.ToDoCompose" parent="android:Theme.Material.Light.NoActionBar" />
+    <!--Try to change status bar color based on phones dark theme in the future.-->
 </resources>

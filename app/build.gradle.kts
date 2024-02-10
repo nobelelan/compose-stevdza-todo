@@ -72,6 +72,7 @@ dependencies {
     //HILT
     implementation("com.google.dagger:hilt-android:2.48")
     ksp("com.google.dagger:hilt-android-compiler:2.48")
+    ksp("com.google.dagger:hilt-compiler:2.48")
 
     val lifecycleVersion = "2.7.0"
     // ViewModel
