@@ -24,9 +24,12 @@ val MediumPriorityColor = Color(0xFFFFC114)
 val HighPriorityColor = Color(0xFFFF4646)
 val NonePriorityColor = Color(0xFFFFFFFF)
 
+val ColorScheme.fabBackgroundColor: Color
+    @Composable
+    get() = if (primary.luminance() > 0.5) Pink80 else Purple80
 val ColorScheme.topAppBarContentColor: Color
 @Composable
-get() = if (primary.luminance() > 0.5) LightGray else Color.White
+get() = if (primary.luminance() > 0.5) Color.White else LightGray
 
 val ColorScheme.topAppBarBackgroundColor: Color
     @Composable
