@@ -90,7 +90,7 @@ fun DefaultListAppBar(
     TopAppBar(
         title = {
             Text(
-                text = "Tasks"
+                text = stringResource(R.string.tasks)
             )
         },
         actions = {
@@ -257,7 +257,7 @@ fun SearchAppBar(
                 Text(
                     modifier = Modifier
                         .alpha(.5f),
-                    text = "Search",
+                    text = stringResource(R.string.search),
                     color = Color.White
                 )
             },
