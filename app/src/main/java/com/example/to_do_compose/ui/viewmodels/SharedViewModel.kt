@@ -8,9 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.to_do_compose.data.models.Priority
 import com.example.to_do_compose.data.models.ToDoTask
 import com.example.to_do_compose.data.repositories.ToDoRepository
+import com.example.to_do_compose.utils.Action
+import com.example.to_do_compose.utils.Constants.MAX_TITLE_LENGTH
 import com.example.to_do_compose.utils.RequestState
 import com.example.to_do_compose.utils.SearchAppBarState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -22,6 +25,8 @@ import javax.inject.Inject
 class SharedViewModel @Inject constructor(
     private val toDoRepository: ToDoRepository
 ) : ViewModel() {
+
+    val action: MutableState<Action> = mutableStateOf(Action.NO_ACTION)
 
     val id: MutableState<Int> = mutableStateOf(0)
     val title: MutableState<String> = mutableStateOf("")
@@ -59,6 +64,31 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    private fun addTask(){
+        viewModelScope.launch(Dispatchers.IO) {
+            val toDoTask = ToDoTask(
+                title = title.value,
+                description = description.value,
+                priority = priority.value
+            )
+            toDoRepository.addTask(toDoTask)
+        }
+    }
+
+    fun handleDatabaseActions(action: Action){
+        when(action){
+            Action.ADD -> {
+                addTask()
+            }
+            Action.UPDATE -> {}
+            Action.DELETE -> {}
+            Action.DELETE_ALL -> {}
+            Action.UNDO -> {}
+            else -> {}
+        }
+        this.action.value = Action.NO_ACTION
+    }
+
     fun updateTaskFields(selectedTask: ToDoTask?){
         if(selectedTask != null){
             id.value = selectedTask.id
@@ -71,6 +101,16 @@ class SharedViewModel @Inject constructor(
             description.value = ""
             priority.value = Priority.LOW
         }
+    }
+
+    fun updateTitle(newTitle: String){
+        if(newTitle.length < MAX_TITLE_LENGTH){
+            title.value = newTitle
+        }
+    }
+
+    fun validateFields(): Boolean{
+        return title.value.isNotEmpty() && description.value.isNotEmpty()
     }
 
 }
