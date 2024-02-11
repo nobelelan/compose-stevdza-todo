@@ -2,17 +2,25 @@ package com.example.to_do_compose.ui.screens.list
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.BottomSheetScaffoldState
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,8 +29,11 @@ import com.example.to_do_compose.ui.theme.fabBackgroundColor
 import com.example.to_do_compose.ui.theme.topAppBarBackgroundColor
 import com.example.to_do_compose.ui.theme.topAppBarContentColor
 import com.example.to_do_compose.ui.viewmodels.SharedViewModel
+import com.example.to_do_compose.utils.Action
 import com.example.to_do_compose.utils.SearchAppBarState
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun ListScreen(
@@ -39,9 +50,17 @@ fun ListScreen(
     val searchAppBarState: SearchAppBarState by sharedViewModel.searchAppbarState
     val searchTextState: String by sharedViewModel.searchTextState
 
-    sharedViewModel.handleDatabaseActions(action)
-
+    val snackBarHostState = remember { SnackbarHostState() }
+    DisplaySnackBar(
+        snackBarHostState = snackBarHostState,
+        handleDatabaseActions = { sharedViewModel.handleDatabaseActions(action = action) },
+        taskTitle = sharedViewModel.title.value,
+        action = action
+    )
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(snackBarHostState)
+        },
         topBar = {
             ListAppBar(
                 sharedViewModel = sharedViewModel,
@@ -80,4 +99,27 @@ fun ListFab(
             tint = Color.White
         )
     }
+}
+
+@Composable
+fun DisplaySnackBar(
+    snackBarHostState: SnackbarHostState,
+    handleDatabaseActions: () -> Unit,
+    taskTitle: String,
+    action: Action
+) {
+    handleDatabaseActions()
+
+    val scope = rememberCoroutineScope()
+    LaunchedEffect(key1 = action){
+        if (action != Action.NO_ACTION){
+            scope.launch {
+                val snackBarResult = snackBarHostState.showSnackbar(
+                    message = "${action.name}: $taskTitle",
+                    actionLabel = "OK"
+                )
+            }
+        }
+    }
+
 }
