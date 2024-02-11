@@ -1,17 +1,21 @@
 package com.example.to_do_compose.navigation.destinations
 
 import android.util.Log
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.to_do_compose.ui.screens.task.TaskScreen
+import com.example.to_do_compose.ui.viewmodels.SharedViewModel
 import com.example.to_do_compose.utils.Action
 import com.example.to_do_compose.utils.Constants
 import com.example.to_do_compose.utils.Constants.TASK_ARGUMENT_KEY
 import com.example.to_do_compose.utils.Constants.TASK_SCREEN
 
 fun NavGraphBuilder.taskComposable(
+    sharedViewModel: SharedViewModel,
     navigateToListScreen: (Action) -> Unit
 ){
     composable(
@@ -21,7 +25,13 @@ fun NavGraphBuilder.taskComposable(
         })
     ){ navBackStackEntry ->
         val taskId = navBackStackEntry.arguments!!.getInt(TASK_ARGUMENT_KEY)
-        TaskScreen(navigateToListScreen = navigateToListScreen)
+        sharedViewModel.getSelectedTask(taskId = taskId)
+        val selectedTask by sharedViewModel.selectedTask.collectAsState()
+
+        TaskScreen(
+            navigateToListScreen = navigateToListScreen,
+            selectedTask = selectedTask
+        )
 
     }
 }
