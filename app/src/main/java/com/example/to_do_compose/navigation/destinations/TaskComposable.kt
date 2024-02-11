@@ -1,6 +1,7 @@
 package com.example.to_do_compose.navigation.destinations
 
 import android.util.Log
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.navigation.NavGraphBuilder
@@ -13,6 +14,7 @@ import com.example.to_do_compose.utils.Action
 import com.example.to_do_compose.utils.Constants
 import com.example.to_do_compose.utils.Constants.TASK_ARGUMENT_KEY
 import com.example.to_do_compose.utils.Constants.TASK_SCREEN
+import kotlinx.coroutines.delay
 
 fun NavGraphBuilder.taskComposable(
     sharedViewModel: SharedViewModel,
@@ -28,8 +30,13 @@ fun NavGraphBuilder.taskComposable(
         sharedViewModel.getSelectedTask(taskId = taskId)
         val selectedTask by sharedViewModel.selectedTask.collectAsState()
 
+        LaunchedEffect(key1 = selectedTask){
+            sharedViewModel.updateTaskFields(selectedTask = selectedTask)
+        }
+
         TaskScreen(
             navigateToListScreen = navigateToListScreen,
+            sharedViewModel = sharedViewModel,
             selectedTask = selectedTask
         )
 
