@@ -83,11 +83,39 @@ fun AddAction(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-@Preview
-fun NewTaskAppBarPreview() {
-    NewTaskAppBar(navigateToListScreen = {})
+fun ExistingTaskAppBar(
+    navigateToListScreen: (Action) -> Unit
+) {
+    TopAppBar(
+        navigationIcon = {
+            BackAction(onBackClicked = navigateToListScreen)
+        },
+        title = {
+            Text(
+                text = stringResource(R.string.add_task),
+                color = MaterialTheme.colorScheme.topAppBarContentColor
+            )
+        },
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = MaterialTheme.colorScheme.topAppBarBackgroundColor,
+            titleContentColor = MaterialTheme.colorScheme.topAppBarContentColor,
+//            navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+//            actionIconContentColor = MaterialTheme.colorScheme.onSecondary
+        ),
+        actions = {
+            AddAction(onAddClicked = navigateToListScreen)
+        }
+    )
 }
+
+//
+//@Composable
+//@Preview
+//fun NewTaskAppBarPreview() {
+//    NewTaskAppBar(navigateToListScreen = {})
+//}
 
 
 
