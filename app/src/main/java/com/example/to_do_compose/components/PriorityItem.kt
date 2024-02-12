@@ -31,14 +31,14 @@ fun PriorityItem(priority: Priority) {
             modifier = Modifier
                 .padding(start = LARGE_PADDING),
             text = priority.name,
-            style = MaterialTheme.typography.labelLarge,
+            style = MaterialTheme.typography.titleSmall,
             color = MaterialTheme.colorScheme.onSurface
         )
     }
 }
 
 @Composable
-@Preview
+//@Preview
 fun PriorityItemPreview() {
     PriorityItem(priority = Priority.HIGH)
 }

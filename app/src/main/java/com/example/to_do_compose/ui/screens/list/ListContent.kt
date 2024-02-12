@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import com.example.to_do_compose.data.models.Priority
 import com.example.to_do_compose.data.models.ToDoTask
 import com.example.to_do_compose.ui.theme.LARGE_PADDING
 import com.example.to_do_compose.ui.theme.PRIORITY_INDICATOR_SIZE
@@ -31,26 +32,48 @@ import com.example.to_do_compose.utils.SearchAppBarState
 @Composable
 fun ListContent(
     allTasks: RequestState<List<ToDoTask>>,
+    lowPriorityTasks: List<ToDoTask>,
+    highPriorityTasks: List<ToDoTask>,
+    sortState: RequestState<Priority>,
     searchedTasks: RequestState<List<ToDoTask>>,
     navigateToTaskScreen: (taskId: Int) -> Unit,
     searchAppBarState: SearchAppBarState,
     contentPadding: PaddingValues
 ) {
-    if(searchAppBarState == SearchAppBarState.TRIGGERED){
-        if (searchedTasks is RequestState.Success){
-            HandleListScreen(
-                tasks = searchedTasks.data,
-                navigateToTaskScreen = navigateToTaskScreen,
-                contentPadding = contentPadding
-            )
-        }
-    }else{
-        if (allTasks is RequestState.Success){
-            HandleListScreen(
-                tasks = allTasks.data,
-                navigateToTaskScreen = navigateToTaskScreen,
-                contentPadding = contentPadding
-            )
+    if(sortState is RequestState.Success){
+        when{
+            searchAppBarState == SearchAppBarState.TRIGGERED -> {
+                if (searchedTasks is RequestState.Success){
+                    HandleListScreen(
+                        tasks = searchedTasks.data,
+                        navigateToTaskScreen = navigateToTaskScreen,
+                        contentPadding = contentPadding
+                    )
+                }
+            }
+            sortState.data == Priority.NONE -> {
+                if (allTasks is RequestState.Success){
+                    HandleListScreen(
+                        tasks = allTasks.data,
+                        navigateToTaskScreen = navigateToTaskScreen,
+                        contentPadding = contentPadding
+                    )
+                }
+            }
+            sortState.data == Priority.LOW -> {
+                HandleListScreen(
+                    tasks = lowPriorityTasks,
+                    navigateToTaskScreen = navigateToTaskScreen,
+                    contentPadding = contentPadding
+                )
+            }
+            sortState.data == Priority.HIGH -> {
+                HandleListScreen(
+                    tasks = highPriorityTasks,
+                    navigateToTaskScreen = navigateToTaskScreen,
+                    contentPadding = contentPadding
+                )
+            }
         }
     }
 }
