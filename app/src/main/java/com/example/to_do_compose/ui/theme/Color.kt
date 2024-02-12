@@ -32,11 +32,11 @@ val ColorScheme.taskItemBackgroundColor: Color
     get() = if (primary.luminance() > 0.5) DarkGray else Color.White
 val ColorScheme.fabBackgroundColor: Color
     @Composable
-    get() = if (primary.luminance() > 0.5) Pink80 else Purple80
+    get() = if (primary.luminance() > 0.5) Purple40 else Purple40
 val ColorScheme.topAppBarContentColor: Color
 @Composable
 get() = if (primary.luminance() > 0.5) Color.White else LightGray
 
 val ColorScheme.topAppBarBackgroundColor: Color
     @Composable
-    get() = if (primary.luminance() > 0.5) Color.Black else PurpleGrey80
+    get() = if (primary.luminance() > 0.5) Color.Black else Purple40

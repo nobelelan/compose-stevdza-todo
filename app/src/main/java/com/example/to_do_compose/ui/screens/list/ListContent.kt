@@ -121,7 +121,7 @@ fun TaskItem(
                     modifier = Modifier.weight(8f),
                     text = toDoTask.title,
                     color = MaterialTheme.colorScheme.taskItemTextColor,
-                    style = MaterialTheme.typography.titleMedium,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
                     maxLines = 1
                 )
@@ -145,7 +145,7 @@ fun TaskItem(
                 modifier = Modifier.fillMaxWidth(),
                 text = toDoTask.description,
                 color = MaterialTheme.colorScheme.taskItemTextColor,
-                style = MaterialTheme.typography.bodySmall,
+                style = MaterialTheme.typography.bodyMedium,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
