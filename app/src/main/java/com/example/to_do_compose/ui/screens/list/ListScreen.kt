@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
@@ -54,6 +55,9 @@ fun ListScreen(
     DisplaySnackBar(
         snackBarHostState = snackBarHostState,
         handleDatabaseActions = { sharedViewModel.handleDatabaseActions(action = action) },
+        onUndoClicked = {
+                        sharedViewModel.action.value = it
+        },
         taskTitle = sharedViewModel.title.value,
         action = action
     )
@@ -105,6 +109,7 @@ fun ListFab(
 fun DisplaySnackBar(
     snackBarHostState: SnackbarHostState,
     handleDatabaseActions: () -> Unit,
+    onUndoClicked: (Action) -> Unit,
     taskTitle: String,
     action: Action
 ) {
@@ -116,10 +121,34 @@ fun DisplaySnackBar(
             scope.launch {
                 val snackBarResult = snackBarHostState.showSnackbar(
                     message = "${action.name}: $taskTitle",
-                    actionLabel = "OK"
+                    actionLabel = setActionLabel(action = action)
+                )
+                undoDeletedTask(
+                    action = action,
+                    snackBarResult = snackBarResult,
+                    onUndoClicked = onUndoClicked
                 )
             }
         }
     }
 
+}
+
+private fun setActionLabel(action: Action): String{
+    return if(action.name == "DELETE"){
+        "UNDO"
+    }else{
+        "OK"
+    }
+}
+
+private fun undoDeletedTask(
+    action: Action,
+    snackBarResult: SnackbarResult,
+    onUndoClicked: (Action) -> Unit
+){
+    if( snackBarResult == SnackbarResult.ActionPerformed
+        && action == Action.DELETE){
+        onUndoClicked(Action.UNDO)
+    }
 }

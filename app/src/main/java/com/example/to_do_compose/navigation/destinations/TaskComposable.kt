@@ -19,19 +19,21 @@ import kotlinx.coroutines.delay
 fun NavGraphBuilder.taskComposable(
     sharedViewModel: SharedViewModel,
     navigateToListScreen: (Action) -> Unit
-){
+) {
     composable(
         route = TASK_SCREEN,
-        arguments = listOf(navArgument(Constants.TASK_ARGUMENT_KEY){
+        arguments = listOf(navArgument(Constants.TASK_ARGUMENT_KEY) {
             type = NavType.IntType
         })
-    ){ navBackStackEntry ->
+    ) { navBackStackEntry ->
         val taskId = navBackStackEntry.arguments!!.getInt(TASK_ARGUMENT_KEY)
         sharedViewModel.getSelectedTask(taskId = taskId)
         val selectedTask by sharedViewModel.selectedTask.collectAsState()
 
-        LaunchedEffect(key1 = selectedTask){
-            sharedViewModel.updateTaskFields(selectedTask = selectedTask)
+        LaunchedEffect(key1 = selectedTask) {
+            if (selectedTask != null || taskId == -1) {
+                sharedViewModel.updateTaskFields(selectedTask = selectedTask)
+            }
         }
 
         TaskScreen(
