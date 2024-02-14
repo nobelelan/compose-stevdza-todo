@@ -44,7 +44,6 @@ import com.example.to_do_compose.ui.theme.topAppBarContentColor
 import com.example.to_do_compose.ui.viewmodels.SharedViewModel
 import com.example.to_do_compose.utils.Action
 import com.example.to_do_compose.utils.SearchAppBarState
-import com.example.to_do_compose.utils.TrailingIconState
 
 @Composable
 fun ListAppBar(
@@ -179,33 +178,47 @@ fun SortAction(
                 expanded = false
             }
         ) {
-            DropdownMenuItem(
-                text = {
-                    PriorityItem(priority = Priority.LOW)
-                },
-                onClick = {
-                    expanded = false
-                    onSortClicked(Priority.LOW)
+            Priority.entries
+                .toTypedArray()
+                .slice(setOf(0,2,3))
+                .forEach { priority ->
+                    DropdownMenuItem(
+                        text = {
+                            PriorityItem(priority = priority)
+                        },
+                        onClick = {
+                            expanded = false
+                            onSortClicked(priority)
+                        }
+                    )
                 }
-            )
-            DropdownMenuItem(
-                text = {
-                    PriorityItem(priority = Priority.HIGH)
-                },
-                onClick = {
-                    expanded = false
-                    onSortClicked(Priority.HIGH)
-                }
-            )
-            DropdownMenuItem(
-                text = {
-                    PriorityItem(priority = Priority.NONE)
-                },
-                onClick = {
-                    expanded = false
-                    onSortClicked(Priority.NONE)
-                }
-            )
+//            DropdownMenuItem(
+//                text = {
+//                    PriorityItem(priority = Priority.LOW)
+//                },
+//                onClick = {
+//                    expanded = false
+//                    onSortClicked(Priority.LOW)
+//                }
+//            )
+//            DropdownMenuItem(
+//                text = {
+//                    PriorityItem(priority = Priority.HIGH)
+//                },
+//                onClick = {
+//                    expanded = false
+//                    onSortClicked(Priority.HIGH)
+//                }
+//            )
+//            DropdownMenuItem(
+//                text = {
+//                    PriorityItem(priority = Priority.NONE)
+//                },
+//                onClick = {
+//                    expanded = false
+//                    onSortClicked(Priority.NONE)
+//                }
+//            )
         }
     }
 }
@@ -258,7 +271,6 @@ fun SearchAppBar(
     onCloseClicked: () -> Unit,
     onSearchClicked: (String) -> Unit
 ) {
-    var trailingIconState by remember { mutableStateOf(TrailingIconState.READY_TO_DELETE) }
     Surface(
         modifier = Modifier
             .fillMaxWidth()
@@ -302,19 +314,10 @@ fun SearchAppBar(
             trailingIcon = {
                 IconButton(
                     onClick = {
-                        when(trailingIconState){
-                            TrailingIconState.READY_TO_DELETE -> {
-                                onTextChange("")
-                                trailingIconState = TrailingIconState.READY_TO_CLOSE
-                            }
-                            TrailingIconState.READY_TO_CLOSE -> {
-                                if(text.isNotEmpty()){
-                                    onTextChange("")
-                                }else{
-                                    onCloseClicked()
-                                    trailingIconState = TrailingIconState.READY_TO_DELETE
-                                }
-                            }
+                        if(text.isNotEmpty()){
+                            onTextChange("")
+                        }else{
+                            onCloseClicked()
                         }
                     }
                 ) {
